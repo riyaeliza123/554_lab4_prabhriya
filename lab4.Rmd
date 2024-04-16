@@ -110,7 +110,13 @@ Create a **single** research question you would be interested in answering via a
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+*Research Question: Does regular physical activity reduce the risk of developing type 2 diabetes in adults aged 40-60?*
+
+*1. Cross-sectional (Contemporaneous): Conduct a survey of adults aged 40-60 to collect data on their physical activity levels and diabetes status at a single point in time. Analyze the data to determine if there is an association between physical activity and diabetes risk.*
+
+*2. Case-control (Retrospective): Identify a group of adults aged 40-60 with type 2 diabetes (cases) and a control group without diabetes. Collect data on their past physical activity levels. Compare the historical physical activity levels between the two groups to assess the association between physical activity and diabetes risk.*
+
+*3. Cohort (Prospective): Recruit a large cohort of adults aged 40-60 without diabetes and follow them over several years. Regularly assess their physical activity levels and track the development of new cases of type 2 diabetes. Analyze the data to determine if there is a relationship between baseline physical activity levels and the risk of developing diabetes over time.*
 
 ## Q1.3. Design an Observational Study for Your Research Question
 
@@ -120,7 +126,11 @@ For your described research question above, which study design (out of the above
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+*For the above research question, I would choose the cohort study design.*
+
+*This is because cohort study allows for the assessment of physical activity levels at baseline and the subsequent development of diabetes over time, providing stronger evidence for causality compared to cross-sectional or case-control studies.*
+
+*While cohort studies can be resource-intensive and require long-term follow-up, they are feasible for this research question given the relatively short time frame (40-60 years old) and the availability of tools for tracking physical activity and diabetes status over time.*
 
 \newpage
 
@@ -341,21 +351,17 @@ Make eight suitable plots of `salary_exp_post_grad` versus each one of the rest 
 
 # MAKE THIS A FUNCTION
 
-heat_map_plot <- function(col, year){
-  filtered_df <- subset(salary_df, year == {{year}})
-  ggplot(filtered_df, aes(x = factor({{col}}, 
-                                   levels = unique({{col}})), 
-                        y = salary_exp_post_grad)) + 
-  geom_bin2d() +
-  scale_x_discrete() + #x axis name should be col_name
-  scale_y_discrete(limits = rev(levels(salary_df$salary_exp_post_grad))) +
-  ggtitle("Year = 2019") #change to {{year}}
+plot_salary_vs_factor <- function(df, factor_var) {
+  
+  df[[factor_var]] <- factor(df[[factor_var]])
+  
+  plot <- ggplot(df, aes(x = .data[[factor_var]], fill = salary_exp_post_grad)) +
+    geom_bar(position = "stack") +
+    facet_wrap(~ year) 
+
+  return(plot)
 }
 
-#heat_map_plot(mds_self_rated_enjoy, 2020)
-
-# YOUR CODE HERE
-colnames(salary_df) 
 ```
 
 **In one or two sentences BY PLOT**, comment on your graphical findings by plot:
@@ -366,12 +372,8 @@ colnames(salary_df)
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-par(mfrow = c(1, 2))
-plot1 <- heat_map_plot(mds_self_rated_enjoy, 2019)
-plot2 <- heat_map_plot(mds_self_rated_enjoy, 2020)
 
-
-
+plot_salary_vs_factor(salary_df, "mds_self_rated_enjoy")
 
 # YOUR CODE HERE
 ```
@@ -382,7 +384,7 @@ plot2 <- heat_map_plot(mds_self_rated_enjoy, 2020)
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "salary_pre_mds")
 # YOUR CODE HERE
 ```
 
@@ -392,7 +394,7 @@ plot2 <- heat_map_plot(mds_self_rated_enjoy, 2020)
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "work_exp")
 # YOUR CODE HERE
 ```
 
@@ -402,7 +404,7 @@ plot2 <- heat_map_plot(mds_self_rated_enjoy, 2020)
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "ds_skill_confidence")
 # YOUR CODE HERE
 ```
 
