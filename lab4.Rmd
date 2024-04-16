@@ -368,7 +368,7 @@ plot_salary_vs_factor <- function(df, factor_var) {
 
 **ANSWER (`mds_self_rated_enjoy` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+*In 2019, people who enjoyed more had more salary expectation. In 2020, we see a similar trend. People who enjoyed less had lesser salary expectation in 2019 and 2020.*
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
@@ -380,7 +380,7 @@ plot_salary_vs_factor(salary_df, "mds_self_rated_enjoy")
 
 **ANSWER (`salary_pre_mds` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+*In both years, people who had a salary of 80K to 100K expect more after the program while all other categories expect the same salary or sometimes even lesser than their previous salary.*
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=15, fig.height=5}
 # You plot goes here.
@@ -390,7 +390,7 @@ plot_salary_vs_factor(salary_df, "salary_pre_mds")
 
 **ANSWER (`work_exp` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+*People with 4-7 years of work experience have very high salary expectations while people with 10+ years of experience have lower expectations.*
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
@@ -400,7 +400,7 @@ plot_salary_vs_factor(salary_df, "work_exp")
 
 **ANSWER (`ds_skill_confidence` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+*People with more skill expect more salary. In 2020, we see some people with low skill confidence expecting 120K salary.*
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
@@ -410,7 +410,7 @@ plot_salary_vs_factor(salary_df, "ds_skill_confidence")
 
 **ANSWER (`does_optional_qs` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+We don't see much difference in proportion of people who do optional questions v/s their salary expectations. Regardless of whether or not they do the question, the expectations are mixed. No particular pattern.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
@@ -420,7 +420,7 @@ plot_salary_vs_factor(salary_df, "does_optional_qs")
 
 **ANSWER (`currently_job_searching` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+People who aren't looking for a job have lower salary expectations as compared to people looking for a job. In 2019, about 50% of people looking for a job expected a 60K to 80K salary.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
@@ -430,7 +430,7 @@ plot_salary_vs_factor(salary_df, "currently_job_searching")
 
 **ANSWER (`baseline_happiness` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+*Happier people have higher salary expectations. Moderately happy people have all ranges of expected salary.*
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
@@ -440,7 +440,7 @@ plot_salary_vs_factor(salary_df, "baseline_happiness")
 
 **ANSWER (`freq_attend_mds_career_events` versus `salary_exp_post_grad`):**
 
-*Type your answer here, replacing this text.*
+*People who attend career fairs often have a mid-range expectation of 80-100K. In 2019, the lesser you attender fairs, the higher the salary expectation is.*
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
