@@ -82,7 +82,21 @@ In your own words, explain what is meant by odds, odds ratio, and log-odds ratio
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+*In a real-life context, let's consider the probability of a football team winning a match.*
+
+*Odds: The odds of the team winning can be calculated as the ratio of the probability of winning to the probability of losing. For example, if the probability of winning is 0.6, then the odds of winning would be 0.6 / (1 - 0.6) = 0.6 / 0.4 = 1.5. This means that for every 1.5 times the team wins, it loses once.*
+
+*Odds Ratio: The odds ratio compares the odds of an event happening in one group to the odds of the same event happening in another group. For example, if we want to compare the odds of winning for two teams, Team A and Team B, and the odds of winning for Team A are 1.5 and for Team B are 0.8, then the odds ratio would be 1.5 / 0.8 = 1.875. This means that Team A is 1.875 times more likely to win than Team B.*
+
+*Log-Odds Ratio: The log-odds ratio is the natural logarithm of the odds ratio. Using the same example, if the odds ratio is 1.875, then the log-odds ratio would be ln(1.875) = 0.625. This means that the difference in the log-odds of winning between Team A and Team B is approximately 0.625.*
+
+*Interpretation:*
+
+*- Odds: For every 1.5 wins, the team loses once.*
+
+*- Odds Ratio: Team A is 1.875 times more likely to win than Team B.*
+
+*- Log-Odds Ratio: The difference in the log-odds of winning between Team A and Team B is approximately 0.625.*
 
 ## Q1.2. Creating a Research Question
 
