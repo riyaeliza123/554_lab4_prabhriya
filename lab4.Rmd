@@ -382,7 +382,7 @@ plot_salary_vs_factor(salary_df, "mds_self_rated_enjoy")
 
 *Type your answer here, replacing this text.*
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=15, fig.height=5}
 # You plot goes here.
 plot_salary_vs_factor(salary_df, "salary_pre_mds")
 # YOUR CODE HERE
@@ -414,7 +414,7 @@ plot_salary_vs_factor(salary_df, "ds_skill_confidence")
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "does_optional_qs")
 # YOUR CODE HERE
 ```
 
@@ -424,7 +424,7 @@ plot_salary_vs_factor(salary_df, "ds_skill_confidence")
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "currently_job_searching")
 # YOUR CODE HERE
 ```
 
@@ -434,7 +434,7 @@ plot_salary_vs_factor(salary_df, "ds_skill_confidence")
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "baseline_happiness")
 # YOUR CODE HERE
 ```
 
@@ -444,7 +444,7 @@ plot_salary_vs_factor(salary_df, "ds_skill_confidence")
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=9, fig.height=5}
 # You plot goes here.
-
+plot_salary_vs_factor(salary_df, "freq_attend_mds_career_events")
 # YOUR CODE HERE
 ```
 
@@ -456,7 +456,7 @@ Given the form in the response `salary_exp_post_grad`, what is the most suitable
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+*Since salary_exp_post_grad is an ordinal variable, we use ordinal regression. In R, we use the polr() function to conduct ordinal regression.*
 
 ## Q2.3. Naive Data Modelling
 
@@ -483,19 +483,34 @@ Depending on the regression model you indicated in **Q2.2**, [**DSCI 562 lecture
 
 ```{r tags=c()}
 # YOUR CODE HERE
+ordinal_model <- polr(salary_exp_post_grad ~ mds_self_rated_enjoy, 
+                      data = salary_df)
+
+p_values <- pnorm(abs(tidy(initial_model)$statistic), lower.tail = FALSE) * 2
+
+tidy_table <- cbind(tidy(initial_model), p_value = p_values) |> 
+  mutate_if(is.numeric, round, 2)
+
+tidy_table$p.adjust <- p.adjust(tidy_table$p_value, method = "fdr")
+
+tidy_table
 ```
 
 By looking at the model's summary in `initial_model` on the adjusted $p$-values, what can you conclude on the statistical relationship between self-rated enjoyment of MDS with the salary expectation after MDS graduation? **Answer in two o three sentences.**
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+*The adjusted p-values of the 3 comparisons of levels of enjoyments (mds_self_rated_enjoy) are all greater than 0.05, which suggests that the differences in self-rated enjoyment of MDS are not statistically significant in predicting salary expectation after graduation.*
 
 Given your results in the `initial_model` summary, **comment in two o three sentences** on how adding the rest of the survey questions (as stratified confounders per se) will benefit your observational study in identifying causality.
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+*1. Including other survey questions as confounders helps control for potential confounding variables that could influence the relationship between the predictor and outcome variables. This improves the accuracy of the estimated effect and enhances the study's ability to identify causal relationships.*
+
+*2. By accounting for additional variables, the study can reduce bias that might arise from unmeasured or omitted variables.*
+
+*3. Considering a broader range of factors in the analysis can lead to more generalizable results.*
 
 ## Q2.4. Full Data Modelling
 
