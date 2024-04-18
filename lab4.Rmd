@@ -2,6 +2,10 @@
 title: "DSCI 554 Lab 4"
 subtitle: Practicum of Causality Through an Observational Study
 output:
+  html_document:
+    toc: yes
+    toc_depth: '4'
+    df_print: paged
   pdf_document:
     toc: yes
     toc_depth: '4'
@@ -456,7 +460,7 @@ Given the form in the response `salary_exp_post_grad`, what is the most suitable
 
 **ANSWER:**
 
-*Since salary_exp_post_grad is an ordinal variable, we use ordinal regression. In R, we use the polr() function to conduct ordinal regression.*
+*Since salary_exp_post_grad is an ordinal variable, we use ordinal regression. In R, we use the polr() function to conduct ordinal regression. This function comes from MASS package and we set argument Hess as TRUE.*
 
 ## Q2.3. Naive Data Modelling
 
@@ -482,9 +486,8 @@ Show the model's summary via the function `tidy()`. Do not forget to calculate t
 Depending on the regression model you indicated in **Q2.2**, [**DSCI 562 lecture notes**](https://pages.github.ubc.ca/MDS-2023-24/DSCI_562_regr-2_students/README.html) will be helpful with the `R` syntax.
 
 ```{r tags=c()}
-# YOUR CODE HERE
-ordinal_model <- polr(salary_exp_post_grad ~ mds_self_rated_enjoy, 
-                      data = salary_df)
+initial_model <- polr(salary_exp_post_grad ~ mds_self_rated_enjoy, 
+                      data = salary_df, Hess = TRUE)
 
 p_values <- pnorm(abs(tidy(initial_model)$statistic), lower.tail = FALSE) * 2
 
@@ -521,22 +524,51 @@ Now, estimate regression model called `full_model` of `salary_exp_post_grad` ver
 Do not forget to calculate the $p$-values for the regression coefficients along with the adjusted $p$-values using a 5% false discovery rate adjustment via the Benjamini-Hochberg procedure.
 
 ```{r tags=c()}
-# YOUR CODE HERE
+
+full_model <- polr(salary_exp_post_grad ~ mds_self_rated_enjoy + 
+                     salary_pre_mds + work_exp + ds_skill_confidence +
+                     does_optional_qs + currently_job_searching +
+                     baseline_happiness + freq_attend_mds_career_events + year,
+                   data = salary_df, 
+                   Hess = TRUE)
+
+full_model_summarized <- cbind(tidy(full_model), 
+                            p.value = pnorm(abs(tidy(full_model)$statistic), 
+                                            lower.tail = FALSE) * 2 ) |> 
+  mutate_if(is.numeric, round, 2) |> 
+  mutate(p.adjust = round(p.adjust(p.value, method="fdr"), 3))
+
+full_model_summarized
+
+
+significant_results <- full_model_summarized |>
+  filter(p.adjust < 0.05)
+significant_results
 ```
 
 By looking at the model's summary in `full_model` on the adjusted $p$-values, what can you conclude on the statistical relationship between self-rated enjoyment of MDS with the salary expectation after MDS graduation? Also, comment on the relationship between the salary expectation after MDS graduation and the confounders.
 
-**Comment in one o two paragraphs.**
+**Comment in one to two paragraphs.**
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+For the full model, we have **4** statistically significant associations here where the p-values are less than 0.05 (alpha):
+
+**Main Association:** When we jump from self rated enjoyment of 2 to 3 then the coefficient for that is significant. This indicates that is **some relationship** between explanatory variable self-rated enjoyment of MDS and the salary expectation after MDS program once we include the confounding variables.
+
+**Other Significant Associations for Salary expectation after MDS:**
+
+a) For salary before MDS we found comparison of \$80,001-\$100,000 to \$60,000-\$80,000 to be significant.
+
+b) Similarly for salary before MDS we also found comparison of more than \$120,000 to \$100,001-\$120,000 to be significant.
+
+c) On comparing the work experience of less than 1 year to 1-4 years we found the association to be significant.
 
 Is there a statistical difference between the data of both years? **Answer in one or two sentences.**
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+There is no evidence of statistical difference between the years 2019 and 2020 as the adjusted p-value for that coefficient is greater than 0.05.
 
 ## Q2.5. Confounding Stratification
 
@@ -544,7 +576,11 @@ rubric={reasoning:4}
 
 **In three or four sentences**, explain the respondents' stratification in the `full_model` made by the confounders (with `year` included). State any assumptions made on the `full_model`.
 
-*Type your answer here, replacing this text.*
+In our full model the respondents are stratified or grouped using our various confounders like work experience, salary before MDS etc. Following are the assumptions:
+
+-   All our confounding factors influence both our input self-rated enjoyment and the dependent variable salary expectations after graduation.
+
+-   No interaction between the strata which indicates a simple and smooth structure across strata for the variation in salary expectations after MDS.
 
 ## Q2.6. Primary Model Selection
 
@@ -554,10 +590,14 @@ It is necessary to statistically check whether `full_model` provides a better da
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+**Null hypothesis:** `initial_model` fits the data better as compared to `full_model`
+
+**Alternate hypothesis:** `full_model` fits the data better as compared to `initial_model`
+
+We see below that the p-value from Anova is less than 0.05 and hence we can reject the null hypothesis in favor of alternate hypothesis. Hence, we can say our `full_model` which includes confounding variables explains variance of our response significantly better as compared to the `initial_model`.
 
 ```{r tags=c()}
-# YOUR CODE HERE
+anova(full_model, initial_model)
 ```
 
 ## Q2.7. Reduced Data Modelling
@@ -572,10 +612,29 @@ Comment on your statistically significant results **in two or three sentences**.
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+-   The `reduced_model` has significant association between our response and all the included explanatory variables for different contrasts or ordinal value jumps.
+
+-   In comparison to our `full_model` , we have more no of significant coefficients in our `reduced_model` especially more levels of self-rated enjoyment and pre-MDS salary being significant in this new model.
 
 ```{r tags=c()}
-# YOUR CODE HERE
+
+reduced_model <- polr(salary_exp_post_grad ~ mds_self_rated_enjoy +
+                        salary_pre_mds + work_exp,
+                      data = salary_df,
+                      Hess = TRUE)
+
+reduced_model_summarized <- cbind(tidy(reduced_model), 
+                               p.value = pnorm(abs(tidy(reduced_model)$statistic),
+                                               lower.tail = FALSE) * 2) |>
+  mutate_if(is.numeric, round, 2) |>
+  mutate(p.adjust = round(p.adjust(p.value, method="fdr"), 3))
+
+reduced_model_summarized
+
+significant_results <- reduced_model_summarized |>
+  filter(p.adjust < 0.05) |> 
+  filter(coef.type == 'coefficient')
+significant_results
 ```
 
 ## Q2.8. Secondary Model Selection
@@ -588,10 +647,24 @@ Based on these comparisons, which model would you finally choose? **Answer in on
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+-   The adjusted p-values below indicate that the `full_model` and `reduced_model` are significantly better than `initial_model` as the p-values are less than 0.05 (alpha).
+
+-   On comparing `reduced_model` (simpler model) with `full_model` the p-value was found to be greater than 0.05 (alpha), hence we would choose `reduced_model` as we cannot reject the null hypothesis here.
 
 ```{r tags=c()}
-# YOUR CODE HERE
+
+anova_initial_full <- anova(initial_model, full_model)
+anova_initial_reduced <- anova(initial_model, reduced_model)
+anova_full_reduced <- anova(full_model, reduced_model)
+
+p_vals <- c(anova_initial_full$"Pr(Chi)"[2], anova_initial_reduced$"Pr(Chi)"[2], anova_full_reduced$"Pr(Chi)"[2])
+
+adjusted_p_vals <- p.adjust(p_vals, method = "BH")
+adjusted_p_vals
+
+names <- c("initial versus full", "initial versus reduced", "full versus reduced")
+data.frame(comparison = names, adjusted_p_value = adjusted_p_vals) |>
+  mutate_if(is.numeric, round, 9)
 ```
 
 ## Q2.9. Inferential Conclusions
@@ -604,7 +677,11 @@ Suppose you **attempt** to use the chosen model in **Q2.8** **to explain causali
 
 **ANSWER:**
 
-*Type your answer here, replacing this text.*
+We have opted for the reduced model in our analysis. This model demonstrated a statistically significant correlation between the primary outcome, MDS enjoyment, and the expected salary after MDS completion. Significant associations were also observed between the expected post-MDS salary and two confounders: pre-MDS salary and work experience. This correlation is logical, as prior salary and work experience likely influence anticipated earnings.
+
+We assume that our model includes all relevant confounders for our key relationship, allowing us to discuss potential causality between post-graduate salary expectations and self-rated enjoyment of the MDS program. In the full model, we accounted for all potential confounders and identified those that are significant. These significant confounders were then incorporated into our reduced model. We discovered that the reduced model outperformed the full model, leading us to conclude that omitted confounders do not obscure the relationship of interest. Further, our reduced model identified a significant association between pre-MDS salary and post-MDS salary expectations, particularly between the salary ranges of less than \$60K and \$60K-80K, as well as between \$60K-80K and \$80K-100K. Additionally, the influence of another confounder was notable: comparing less than 1 year of work experience to 1-4 years of work experience was significantly associated. We cannot assert causality for these confounders because our study wasn't designed to probe these specific links and additional confounders might exist between these variables. However, the significant association warrants further investigation.
+
+Now, we'll address the question, "Does a person's self-rated enjoyment of the MDS program have any causal impact on their expected salary upon graduation?" Our analysis indicates that an increase in self-rated enjoyment of the MDS from 1 to 2 leads to a rise in expected post-graduation salary. However, an increase from 2 to 3 appears to result in a decrease in expected salary.
 
 ## (Challenging) Q2.10. Study Critique
 
